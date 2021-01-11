@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using UnityEditor.UIElements;
 using UnityEditor.Experimental.GraphView;
 
 namespace UnityNodeGraph
@@ -50,38 +51,52 @@ namespace UnityNodeGraph
             this.extensionContainer.Add(field);
             return field;
         }
+        public EnumField AddEnumField(string name, System.Enum enumValue)
+        {
+            EnumField field = new EnumField(name, enumValue) { };
+            this.extensionContainer.Add(field);
+            return field;
+        }
         #endregion
         #region port functions
         // Add Input port to current Node
-        public Port AddInputPort(string name, System.Type clazz, Port.Capacity portCapacity = Port.Capacity.Single)
+        public Port AddInputPort(string name, System.Type clazz, Port.Capacity portCapacity = Port.Capacity.Single, PortData portData=null)
         {
             Port _port = InstantiatePort(Orientation.Horizontal, Direction.Input, portCapacity, clazz);
             _port.portName = name;
-            _port.portColor = FindPortColor(clazz.ToString());
+            _port.portColor = FindPortColor(portData);
             inputContainer.Add(_port);
             inputPorts.Add(_port);
             return _port;
         }
         // Add Output port to current Node
-        public Port AddOutputPort(string name, System.Type clazz, Port.Capacity portCapacity = Port.Capacity.Single)
+        public Port AddOutputPort(string name, System.Type clazz, Port.Capacity portCapacity = Port.Capacity.Single, PortData portData = null)
         {
             Port _port = InstantiatePort(Orientation.Horizontal, Direction.Output, portCapacity, clazz);
             _port.portName = name;
-            _port.portColor = FindPortColor(clazz.ToString());
+            _port.portColor = FindPortColor(portData);
             outputContainer.Add(_port);
             outputPorts.Add(_port);
             return _port;
         }
-        Color FindPortColor(string type)
+        public Color FindPortColor(PortData portData)
         {
-            switch (type)
+            //Debug.Log(portData.portType);
+            if (portData != null)
             {
-                case "UnityNodeGraph.PortTypeFlow":
-                    return new Color32(63, 127, 191, 232);
-                case "UnityNodeGraph.PortTypeAction":
-                    return new Color32(191, 63, 63, 232);
-                default:
-                    return Color.gray;
+                switch (portData.portType)
+                {
+                    case "UnityNodeGraph.PortTypeFlow":
+                        return new Color32(63, 127, 191, 232);
+                    case "UnityNodeGraph.PortTypeAction":
+                        return new Color32(191, 63, 63, 232);
+                    default:
+                        return (portData.color == Color.clear)?Color.gray:portData.color;
+                }
+            }
+            else
+            {
+                return Color.gray;
             }
         }
         public PortData PortToPortData(Port _port)
@@ -96,12 +111,12 @@ namespace UnityNodeGraph
         public Port AddInputPortFromPortData(PortData _portData)
         {
             Port.Capacity capacity = (_portData.portCapacity == 0) ? Port.Capacity.Single : Port.Capacity.Multi;
-            return AddInputPort(_portData.name, GetType(_portData.portType), capacity);
+            return AddInputPort(_portData.name, GetType(_portData.portType), capacity, _portData);
         }
         public Port AddOutputPortFromPortData(PortData _portData)
         {
             Port.Capacity capacity = (_portData.portCapacity == 0) ? Port.Capacity.Single : Port.Capacity.Multi;
-            return AddOutputPort(_portData.name, GetType(_portData.portType), capacity);
+            return AddOutputPort(_portData.name, GetType(_portData.portType), capacity, _portData);
         }
         private System.Type GetType(string strFullyQualifiedName)
         {
@@ -141,13 +156,5 @@ namespace UnityNodeGraph
             return JsonUtility.ToJson(jsonData);
         }
         #endregion
-    }
-    public class PortTypeFlow
-    {
-
-    }
-    public class PortTypeAction
-    {
-
     }
 }

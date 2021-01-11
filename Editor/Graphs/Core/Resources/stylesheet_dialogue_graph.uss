@@ -4,3 +4,6 @@ GridBackground {
 	--thick-line-color: rgba(193, 196, 192, 0.1);
 	--spacing: 10;
 }
+.grayboard > .mainContainer > #content > #header > #addButton {
+    visibility: hidden;
+}

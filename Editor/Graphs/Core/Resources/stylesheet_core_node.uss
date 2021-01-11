@@ -16,3 +16,9 @@
 .node.collapsed #settings {
 	display: none;
 }
+.node.entryNode #title{
+	background-color: rgba(63, 127, 63, 0.91);
+}
+.node.exitNode #title{
+	background-color: rgba(191, 63, 63, 0.91);
+}

@@ -7,20 +7,20 @@ namespace UnityNodeGraph
 {
     public class RootNode : CoreNode
     {
+        RootNodeData rootData;
         public override void OnInitialize()
         {
+            AddToClassList("root");
+            rootData = jsonData.GetCustomData(typeof(RootNodeData)) as RootNodeData;
             if (jsonData.outputPorts.Count == 0)
             {
-                jsonData.outputPorts.Add(new PortData
-                {
-                    name = "Action",
-                    portType = typeof(PortTypeAction).ToString(),
-                    portCapacity = 1
-                });
-                jsonData.outputPorts.Add(new PortData
-                {
-                    name = "Flow",
-                    portType = typeof(PortTypeFlow).ToString()
+                rootData.ports.ForEach(_rootPort=> {
+                    jsonData.outputPorts.Add(new PortData
+                    {
+                        name = _rootPort.name,
+                        portType = _rootPort.portType,
+                        portCapacity = _rootPort.portCapacity
+                    });
                 });
             }
             jsonData.inputPorts.ForEach(_portData => {
@@ -29,7 +29,7 @@ namespace UnityNodeGraph
             jsonData.outputPorts.ForEach(_portData => {
                 AddOutputPortFromPortData(_portData);
             });
-            this.AddToClassList("rootNode");
+            this.AddToClassList("entryNode");
         }
         public override GraphCustomData getCustomData()
         {

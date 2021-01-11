@@ -68,7 +68,7 @@ namespace UnityNodeGraph
 
             // Add Function to graphView
             //graphView.GenerateMiniMap();
-            //graphView.GenerateBlackBoard();
+            graphView.GenerateBlackBoard(currentData);
         }
         void LoadToolbar()
         {
@@ -79,7 +79,7 @@ namespace UnityNodeGraph
                 // Add Buttons
                 graphToolbar.Add(new ToolbarButton(() => {
                     SaveData();
-                }) { text = "Save" });
+                }) { text = "Save Graph" });
 
                 // Load Toolbar to root view
                 rootVisualElement.Add(graphToolbar);
@@ -125,13 +125,13 @@ namespace UnityNodeGraph
             List<CoreNode> nodes = graphView.nodes.ToList().Cast<CoreNode>().ToList();
             var connectedPorts = edges.Where(x => x.input.node != null).ToArray();
 
-            currentData.links = new List<LinkData>();
+            currentData.__links = new List<LinkData>();
 
             for (int i = 0; i < connectedPorts.Length; i++)
             {
                 CoreNode outputNode = connectedPorts[i].output.node as CoreNode;
                 CoreNode inputNode = connectedPorts[i].input.node as CoreNode;
-                currentData.links.Add(new LinkData {
+                currentData.__links.Add(new LinkData {
                     sourceGuid = outputNode.guid,
                     sourcePortName = connectedPorts[i].output.portName,
                     targetGuid = inputNode.guid,
@@ -139,10 +139,10 @@ namespace UnityNodeGraph
                 });
             }
 
-            currentData.nodes = new List<NodeData>();
+            currentData.__nodes = new List<NodeData>();
             nodes.ForEach(_node=> {
                 //Debug.Log(_node.GetType().ToString());
-                currentData.nodes.Add(new NodeData {
+                currentData.__nodes.Add(new NodeData {
                     guid = _node.guid,
                     name = _node.title,
                     position = _node.GetPosition().position,
@@ -150,7 +150,7 @@ namespace UnityNodeGraph
                     type = _node.GetType().ToString()
                 });
             });
-            currentData.rootGuid = graphView.rootGuid;
+            currentData.__rootGuid = graphView.rootGuid;
             EditorUtility.SetDirty(currentData);
             //Debug.Log(JsonUtility.ToJson(currentData));
         }
