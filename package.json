@@ -1,6 +1,6 @@
 {
   "name": "com.magnifyall.unity.node.graph",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "Unity Node Graph",
   "description": "This is an extended package from UnityEditor.Experimental.GraphView, allow to create unlimited type of Graph",
   "unity": "2020.1",
